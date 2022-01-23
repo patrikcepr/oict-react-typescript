@@ -2,17 +2,19 @@ import React from 'react';
 
 import styles from './Header.module.sass';
 
-interface Props {
-  lang: string;
+import { AllProps } from '../../App';
+interface Props extends AllProps {
+  district: string;
 }
 
-const Header = ({ lang }: Props) => {
+const Header = ({ lang, district }: Props) => {
   return (
     <header className={styles.header}>
       <h1>
         {lang === 'en'
-          ? 'Medical Institutions List'
-          : 'Seznam lékařských zařízení'}
+          ? 'Medical Institutions List '
+          : 'Seznam lékařských zařízení '}
+        {district.toUpperCase()}
       </h1>
     </header>
   );

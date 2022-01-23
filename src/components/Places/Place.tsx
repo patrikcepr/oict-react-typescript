@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { FC } from 'react';
 import Button from '../UI/Button/Button';
 
 import styles from './Place.module.sass';
 
-interface Props {
+import { AllProps } from '../../App';
+
+interface Props extends AllProps {
   name: string;
   addr: string;
   index: number;
-  lang: string;
   onShowModal: (index: number) => void;
 }
 
-const Place = ({ name, addr, index, lang, onShowModal }: Props) => {
+const Place: FC<Props> = ({
+  name,
+  addr,
+  index,
+  lang,
+  onShowModal,
+}): JSX.Element => {
   return (
     <div className={styles.place}>
       <h3>{name}</h3>

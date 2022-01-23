@@ -9,26 +9,56 @@ import Places from './components/Places/Places';
 import Modal from './components/UI/Modal/Modal';
 import PlaceDetail from './components/Places/PlaceDetail';
 
+export interface AllProps {
+  lang: string;
+}
+
+interface IProperties {
+  address: {
+    street_address: string;
+    address_formatted: string;
+  };
+  district: string;
+  email: string[];
+  id: string;
+  name: string;
+  opening_hours: {
+    closes: string;
+    day_of_week: string;
+    opens: string;
+  }[];
+  telephone: string[];
+  type: {
+    description: string;
+  };
+  web: string[];
+}
+
+export interface IResponseData {
+  [key: string]: IProperties;
+}
+
+// mock server
 const mockUrl: string =
   'https://private-anon-510a79a142-golemioapi.apiary-mock.com/v2/medicalinstitutions/?latlng=&range=&districts=&group=&limit=&offset=&updatedSince=';
 
+// production server
 const productionUrl: string =
   'https://api.golemio.cz/v2/medicalinstitutions/?latlng=&range=&districts=praha-7&group=&limit=&offset=&updatedSince=';
 
+// public token
 const publicToken: string =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhhY2thdGhvbkBnb2xlbWlvLmN6IiwiaWQiOjIsIm5hbWUiOiJIYWNrYXRob24iLCJzdXJuYW1lIjoiR29sZW1pbyIsImlhdCI6MTU4NDU0NDYzMSwiZXhwIjoxMTU4NDU0NDYzMSwiaXNzIjoiZ29sZW1pbyIsImp0aSI6IjVlNjU2NDQxLTA4OGUtNDYyYS1iMjUyLTFiNzI1OGU0ZGJkYSJ9.ypDAJirgEs8VBSauraFEoLTTtC6y_F8V1fheAHgzMos';
-
-// const myToken: string =
-//   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBhdHJpay5jZXByQGdtYWlsLmNvbSIsImlkIjoxMDQ2LCJuYW1lIjpudWxsLCJzdXJuYW1lIjpudWxsLCJpYXQiOjE2NDIzNTE2NzcsImV4cCI6MTE2NDIzNTE2NzcsImlzcyI6ImdvbGVtaW8iLCJqdGkiOiJhMGQ3NWM2MS1mOTkxLTRkZWEtOGNlZi1hZjg0NGQyZjBhOWYifQ.tr4ZhXhIGVqGz9dzWoyGI-iRFCuvfON16nbhlwcyfiw';
 
 function App() {
   const [lang, setLang] = useState('cs');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<IResponseData[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [detail, setDetail] = useState({});
   const [apikey, setApikey] = useState('');
+  const [district, setDistrict] = useState('');
 
   // nastaveni jazyka
   const chooseLangHandler = (lang: string) => {
@@ -66,7 +96,8 @@ function App() {
       });
       const data = response.data.features;
       setData(() => data);
-      // console.log(data);
+      // console.log(data[0].properties.district);
+      setDistrict(() => data[0].properties.district);
     } catch (error: any) {
       console.error(error);
       setError(() => error.message);
@@ -79,7 +110,7 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apikey]);
 
-  // logika modal elementu
+  // logika k modal elementu
   const hideModalHandler = () => {
     setShowModal(!showModal);
   };
@@ -97,12 +128,16 @@ function App() {
     scrollToTop();
   };
 
+  // error catching a logika obsahu
+  // loader
   let content = <Loader />;
 
+  // obsah je list položek z api
   if (!isLoading && data.length > 0) {
     content = <Places lang={lang} data={data} onShowModal={showModalHandler} />;
   }
 
+  // data nebyla přijata
   if (!isLoading && data.length === 0 && !error) {
     content = (
       <div className='error'>
@@ -111,6 +146,7 @@ function App() {
     );
   }
 
+  // server nahlásil chybu
   if (error) {
     if (error === 'Request failed with status code 401') {
       content = (
@@ -133,7 +169,7 @@ function App() {
 
   return (
     <div className='App'>
-      <Header lang={lang} />
+      <Header lang={lang} district={district} />
       <Nav
         lang={lang}
         onChooseLang={chooseLangHandler}

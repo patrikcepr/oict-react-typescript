@@ -2,33 +2,10 @@ import React, { FC } from 'react';
 
 import styles from './PlaceDetails.module.sass';
 
-interface IProperties {
-  address: {
-    street_address: string;
-    address_formatted: string;
-  };
-  email: string[];
-  id: string;
-  name: string;
-  opening_hours: {
-    closes: string;
-    day_of_week: string;
-    opens: string;
-  }[];
-  telephone: string[];
-  type: {
-    description: string;
-  };
-  web: string[];
-}
-
-interface IResponseData {
-  [key: string]: IProperties;
-}
-
-interface Props {
+import { AllProps } from '../../App';
+import { IResponseData } from '../../App';
+interface Props extends AllProps {
   detail: IResponseData;
-  lang: string;
   onHideModal: () => void;
 }
 
@@ -65,7 +42,9 @@ const PlaceDetail: FC<Props> = ({ detail, lang, onHideModal }): JSX.Element => {
         </a>
       </div>
       <div className={styles.link}>
-        <a href={`mailto:${email}`}>{email}</a>
+        <a href={`mailto:${email}`}>
+          {email && email.length > 33 ? email.substring(0, 30) + '...' : email}
+        </a>
       </div>
       {tel && (
         <div className={styles.link}>

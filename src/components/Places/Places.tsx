@@ -3,32 +3,11 @@ import Place from './Place';
 
 import styles from './Places.module.sass';
 
-interface IProperties {
-  address: {
-    street_address: string;
-    address_formatted: string;
-  };
-  email: string[];
-  id: string;
-  name: string;
-  opening_hours: {
-    closes: string;
-    day_of_week: string;
-    opens: string;
-  }[];
-  telephone: string[];
-  type: {
-    description: string;
-  };
-  web: string[];
-}
+import { AllProps } from '../../App';
 
-interface IResponseData {
-  [key: string]: IProperties;
-}
+import { IResponseData } from '../../App';
 
-interface Props {
-  lang: string;
+interface Props extends AllProps {
   data: IResponseData[];
   onShowModal: (index: number) => void;
 }

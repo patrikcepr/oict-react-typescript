@@ -3,8 +3,8 @@ import ReactDom from 'react-dom';
 
 import styles from './Modal.module.sass';
 
-interface Props {
-  lang: string;
+import { AllProps } from '../../../App';
+interface Props extends AllProps {
   onHideModal: () => void;
   children?: JSX.Element;
 }
